@@ -46,4 +46,4 @@ jobs:
 
       - name: Upload tar file to Amazon S3
         run: |
-          aws s3 cp li-py.tar s3://${{ secrets.S3_BUCKET_NAME }}/artifacts/com.example.DockerImages/
+          aws s3 cp li-py.tar s3://${{ secrets.S3_BUCKET_NAME }}/artifacts/com.example.DemoPy/1.0.0/
