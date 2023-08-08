@@ -95,7 +95,7 @@ index_html = '''
 </head>
 <body>
     <div class="container">
-        <h1>Text Detector System on Docker(from Github)</h1>
+        <h1>Text Detector System on Docker(from Github live)</h1>
         <form method="post" class="form-group">
             <label for="text">Type a text here:</label>
             <input type="text" id="text" name="text" value="{{ typed_text }}" required>
