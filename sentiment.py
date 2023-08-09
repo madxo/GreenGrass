@@ -8,6 +8,16 @@ from firebase_admin import credentials
 from firebase_admin import db
 import json
 import random
+from pymongo import MongoClient
+
+#Creating a pymongo client
+client = MongoClient('host.docker.internal', 27017)
+
+#Getting the database instance
+database = client['mydb']
+
+#Creating a collection
+coll = database['example']
 
 app = Flask(__name__)
 sid = SentimentIntensityAnalyzer()
@@ -95,7 +105,7 @@ index_html = '''
 </head>
 <body>
     <div class="container">
-        <h1>Text Detector System on Docker(from Github)</h1>
+        <h1>Text Detector System on Docker</h1>
         <form method="post" class="form-group">
             <label for="text">Type a text here:</label>
             <input type="text" id="text" name="text" value="{{ typed_text }}" required>
@@ -173,6 +183,9 @@ def analysis_text():
           'message': typed_text
         })
 
+        #Inserting document into a collection
+        doc1 = {"messageKey": messageKey, "sentiment": sentiment, "message": typed_text, "result": result}
+        coll.insert_one(doc1)
         with open(file_path, 'w') as json_file:
             json.dump(jsonData, json_file, indent=4)
 
