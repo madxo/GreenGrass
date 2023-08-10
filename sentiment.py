@@ -9,6 +9,10 @@ from firebase_admin import db
 import json
 import random
 from pymongo import MongoClient
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 #Creating a pymongo client
 client = MongoClient('host.docker.internal', 27017)
@@ -145,7 +149,7 @@ def analysis_text():
     
     if request.method == "POST":
         typed_text = request.form["text"]
-        print("The text is: ", typed_text)
+        logging.debug("The text is:{}".format(typed_text))
         sentences = [typed_text]
         ss = sid.polarity_scores(typed_text)
         result = {
@@ -160,9 +164,9 @@ def analysis_text():
             sentiment = "Negative"
         else:
             sentiment = "Neutral"
-        print("The sentiment is: ", sentiment)
+        logging.debug("The sentiment is: {}".format(sentiment))
         messageKey = random_num()
-        print("The messageKey is", messageKey)
+        logging.debug("The messageKey is: {}".format(messageKey))
         ref = db.reference('/')
         data = {
           'messageKey': messageKey,
