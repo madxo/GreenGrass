@@ -10,12 +10,19 @@ import json
 import random
 from pymongo import MongoClient
 import logging
+import socket
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# Get the hostname
+host_name = socket.gethostname()
+
+# Get the IP address associated with the hostname
+host_ip = socket.gethostbyname(host_name)
+logging.debug("the host ip is {}".format(host_ip))
 
 #Creating a pymongo client
-client = MongoClient('host.docker.internal', 27017)
+client = MongoClient('host_ip', 27017)
 
 #Getting the database instance
 database = client['mydb']
@@ -109,7 +116,7 @@ index_html = '''
 </head>
 <body>
     <div class="container">
-        <h1>Text Detector System on Docker</h1>
+        <h1>Text Detector System on Docker(V1)</h1>
         <form method="post" class="form-group">
             <label for="text">Type a text here:</label>
             <input type="text" id="text" name="text" value="{{ typed_text }}" required>
