@@ -10,19 +10,19 @@ import json
 import random
 from pymongo import MongoClient
 import logging
-import socket
+import boto3
+import os
+from datetime import datetime
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Get the hostname
-host_name = socket.gethostname()
-
-# Get the IP address associated with the hostname
-host_ip = socket.gethostbyname(host_name)
-logging.debug("the host ip is {}".format(host_ip))
+ec2 = boto3.client('ec2', region_name='ap-south-1',
+    aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'))
+response = ec2.describe_instances(InstanceIds=[os.environ.get('INSTANCE_ID')])
+instance = response['Reservations'][0]['Instances'][0]
 
 #Creating a pymongo client
-client = MongoClient('host_ip', 27017)
+client = MongoClient(instance.get('PublicIpAddress'), 27017)
 
 #Getting the database instance
 database = client['mydb']
@@ -116,7 +116,7 @@ index_html = '''
 </head>
 <body>
     <div class="container">
-        <h1>Text Detector System on Docker(V1)</h1>
+        <h1>Text Detector System on Docker(final)</h1>
         <form method="post" class="form-group">
             <label for="text">Type a text here:</label>
             <input type="text" id="text" name="text" value="{{ typed_text }}" required>
@@ -175,10 +175,13 @@ def analysis_text():
         messageKey = random_num()
         logging.debug("The messageKey is: {}".format(messageKey))
         ref = db.reference('/')
+        current_timestamp = datetime.now()
+        timestamp_string = current_timestamp.strftime('%Y-%m-%d %H:%M:%S')
         data = {
           'messageKey': messageKey,
           'result': result,
-          'sentiment': sentiment 
+          'sentiment': sentiment,
+          'timeStamp': timestamp_string
         }
         ref.push(data)
         try:
@@ -191,11 +194,12 @@ def analysis_text():
           'messageKey': messageKey,
           'result': result,
           'sentiment': sentiment,
-          'message': typed_text
+          'message': typed_text,
+          'timeStamp': timestamp_string
         })
 
         #Inserting document into a collection
-        doc1 = {"messageKey": messageKey, "sentiment": sentiment, "message": typed_text, "result": result}
+        doc1 = {"messageKey": messageKey, "sentiment": sentiment, "message": typed_text, "result": result, "timeStamp": timestamp_string}
         coll.insert_one(doc1)
         with open(file_path, 'w') as json_file:
             json.dump(jsonData, json_file, indent=4)
