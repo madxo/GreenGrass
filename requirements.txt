@@ -2,3 +2,4 @@ flask
 nltk
 firebase_admin
 pymongo
+boto3
