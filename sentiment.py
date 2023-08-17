@@ -39,26 +39,28 @@ index_html = '''
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Text Detector System</title>
+    <title>Sentiment Analysis UI</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
             background-color: #f0f0f0;
         }
 
-        h1 {
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
             text-align: center;
-            color: #007bff;
         }
 
-        .container {
-            width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #333;
         }
 
         .form-group {
@@ -66,41 +68,47 @@ index_html = '''
         }
 
         .form-group label {
-            display: block;
+            font-size: 20px;
+            margin-bottom: 10px;
             color: #333;
-            font-size: 18px;
-            margin-bottom: 5px;
         }
 
         .form-group input[type="text"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid #007bff;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 18px;
+            margin-top: 10px;
         }
 
         .form-group input[type="submit"] {
             background-color: #007bff;
-            color: #fff;
+            color: white;
             cursor: pointer;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 18px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .form-group input[type="submit"]:hover {
+            background-color: #0056b3;
         }
 
         .result {
             margin-top: 30px;
-            text-align: center;
         }
 
         .result p {
-            font-size: 18px;
+            font-size: 20px;
             margin-bottom: 10px;
+            color: #333;
         }
 
-        /* Colorful Sentiment Results */
+        /* Sentiment Classes */
         .positive {
             color: green;
         }
@@ -116,7 +124,7 @@ index_html = '''
 </head>
 <body>
     <div class="container">
-        <h1>Text Detector System on Docker(final)</h1>
+        <h1>Sentiment Analysis</h1>
         <form method="post" class="form-group">
             <label for="text">Type a text here:</label>
             <input type="text" id="text" name="text" value="{{ typed_text }}" required>
@@ -126,7 +134,9 @@ index_html = '''
         <div class="result">
             <p>Typed Text: {{ typed_text }}</p>
             <p class="{% if result.compound >= 0.05 %}positive{% elif result.compound <= -0.05 %}negative{% else %}neutral{% endif %}">
-                Sentiment: {% if result.compound >= 0.05 %}Positive{% elif result.compound <= -0.05 %}Negative{% else %}Neutral{% endif %}
+                Sentiment: <span class="{% if result.compound >= 0.05 %}positive{% elif result.compound <= -0.05 %}negative{% else %}neutral{% endif %}">
+                    {% if result.compound >= 0.05 %}Positive{% elif result.compound <= -0.05 %}Negative{% else %}Neutral{% endif %}
+                </span>
             </p>
             <p>Compound Score: {{ result.compound }}</p>
             <p class="positive">Positive Score: {{ result.positive }}</p>
