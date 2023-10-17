@@ -124,7 +124,7 @@ index_html = '''
 </head>
 <body>
     <div class="container">
-        <h1>Sentimental Analysis</h1>
+        <h1>Edge Sentimental Analysis</h1>
         <form method="post" class="form-group">
             <label for="text">Type a text here:</label>
             <input type="text" id="text" name="text" value="{{ typed_text }}" required>
